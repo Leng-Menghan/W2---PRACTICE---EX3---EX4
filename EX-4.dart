@@ -27,8 +27,12 @@ class Order{
   List<OrderItem> orderedItems;
   Deliver deliveryType;
 
-  Order.delivered({required this.customer, required this.orderedItems, required this.deliveryFee}) : deliveryType = Deliver.DELIVERED;
-  Order.pickedUp({required this.customer, required this.orderedItems}) : deliveryType = Deliver.PICKED_UP, deliveryFee = 0;
+  Order.delivered({required this.customer, required this.deliveryFee}) : deliveryType = Deliver.DELIVERED, orderedItems = [];
+  Order.pickedUp({required this.customer}) : deliveryType = Deliver.PICKED_UP, deliveryFee = 0, orderedItems = [];
+
+  void addOrderItem(Product product, int quantity){
+    orderedItems.add(OrderItem(product: product, quantity: quantity));
+  }
 
   void totalPrice(){
     double total = 0;
@@ -45,17 +49,19 @@ void main(){
   var laptop = Product(name: 'Laptop', price: 500.0);
   var keyboard = Product(name: 'Keyboard', price: 20.0);
   var mouse = Product(name: 'Mouse', price: 5.0);
-  var orderItems = [
-    OrderItem(product: laptop, quantity: 1), 
-    OrderItem(product: keyboard, quantity: 2),
-    OrderItem(product: mouse, quantity: 1)
-  ];
+
   print('Delivery order: ');
-  var orderDelivered = Order.delivered(customer: customer, orderedItems: orderItems, deliveryFee: 2.0);
+  var orderDelivered = Order.delivered(customer: customer, deliveryFee: 2.0);
+  orderDelivered.addOrderItem(laptop, 1);
+  orderDelivered.addOrderItem(keyboard, 1);
+  orderDelivered.addOrderItem(mouse, 1);
   orderDelivered.totalPrice();
 
   print('Pick up order: ');
-  var orderPickedUp = Order.pickedUp(customer: customer, orderedItems: orderItems);
+  var orderPickedUp = Order.pickedUp(customer: customer);
+  orderPickedUp.addOrderItem(laptop, 2);
+  orderPickedUp.addOrderItem(keyboard, 1);
+  orderPickedUp.addOrderItem(mouse, 1);
   orderPickedUp.totalPrice();
 }
 
